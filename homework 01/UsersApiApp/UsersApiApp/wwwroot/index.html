@@ -1,0 +1,46 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <button onclick="loadUsers()">Load Users</button>
+    <ul id="userList"></ul>
+
+    <input type="number" id="userIndexInput" placeholder="ender index"/>
+    <button onclick="loadUserByIndex()">Load User by Index</button>
+    <div id="singleUserResult"></div>
+
+    <script>
+        async function loadUsers() {
+            const response = await fetch('https://localhost:7157/api/users');
+            const users = await response.json();  
+            // console.log(users);
+            const listItems = users.map(user => `<li>${user}</li>`).join('');
+            document.getElementById('userList').innerHTML = listItems;
+        }
+
+async function loadUserByIndex() {
+    const index = document.getElementById("userIndexInput").value;
+    const resultDiv = document.getElementById("singleUserResult");
+
+    if (index === "") {
+        resultDiv.textContent = "Please enter an index.";
+        return;
+    }
+
+            const response = await fetch(`https://localhost:7157/api/users/${index}`);
+            if (!response.ok) {
+                console.log('Error:', response.status);
+                return;
+            }
+    const user = await response.text();
+
+            resultDiv.textContent = `User found: ${typeof user === 'object' ? JSON.stringify(user) : user}`;
+        }
+        //loadUsers();
+        //loadUserByIndex();
+    </script>
+</body>
+</html>
